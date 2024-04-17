@@ -1,23 +1,21 @@
 //! A helper macro for creating structs with `new`.
 
-#[allow(unused_macros)]
-macro_rules! internal_new {
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __internal_new {
     ($struct:tt$(<$($gen:tt),*>)?, $constructor:ident $($args:tt),*) => {
         <$struct$(<$($gen)*,>)?>::$constructor($($args,)*)
     };
 }
 
-#[allow(unused_imports)]
-pub(crate) use internal_new;
-
 /// A helper for creating structs akin to the `new` keyword in other languages.
 #[macro_export]
 macro_rules! new {
     ($struct:tt$(<$($gen:tt),*>)?($($args:tt),*)) => {
-        $crate::internal_new!($struct$(<$($gen),*>)?, new $($args),*)
+        $crate::__internal_new!($struct$(<$($gen),*>)?, new $($args),*)
     };
     ($struct:tt$(<$($gen:tt),*>)?: $constructor:tt($($args:tt),*)) => {
-        $crate::internal_new!($struct$(<$($gen),*>)?, $constructor $($args),*)
+        $crate::__internal_new!($struct$(<$($gen),*>)?, $constructor $($args),*)
     };
 }
 
@@ -25,11 +23,11 @@ macro_rules! new {
 #[macro_export]
 macro_rules! try_new {
     ($struct:tt($($args:tt),*)) => {
-        $crate::internal_new!($struct, try_new $($args),*)
+        $crate::__internal_new!($struct, try_new $($args),*)
     };
     ($struct:tt$(<$($gen:tt),*>)?: $constructor:tt($($args:tt),*)) => {
         ::paste::paste! {
-            $crate::internal_new!($struct$(<$($gen),*>)?, [<try_ $constructor>] $($args),*)
+            $crate::__internal_new!($struct$(<$($gen),*>)?, [<try_ $constructor>] $($args),*)
         }
     };
 }
@@ -39,7 +37,7 @@ macro_rules! try_new {
 macro_rules! with {
     ($struct:tt$(<$($gen:tt),*>)?: $constructor:tt($($args:tt),*)) => {
         ::paste::paste! {
-            $crate::internal_new!($struct$(<$($gen),*>)?, [<with_ $constructor>] $($args),*)
+            $crate::__internal_new!($struct$(<$($gen),*>)?, [<with_ $constructor>] $($args),*)
         }
     }
 }
@@ -51,11 +49,11 @@ macro_rules! with {
 macro_rules! from {
 	($struct:tt($($args:tt),*)) => {
 		use ::std::convert::From as _;
-        $crate::internal_new!($struct, from $($args),*)
+        $crate::__internal_new!($struct, from $($args),*)
 	};
     ($struct:tt$(<$($gen:tt),*>)?: $constructor:tt($($args:tt),*)) => {
         ::paste::paste! {
-            $crate::internal_new!($struct$(<$($gen),*>)?, [<from_ $constructor>] $($args),*)
+            $crate::__internal_new!($struct$(<$($gen),*>)?, [<from_ $constructor>] $($args),*)
         }
     }
 }
@@ -67,11 +65,11 @@ macro_rules! from {
 macro_rules! try_from {
     ($struct:tt($($args:tt),*)) => {{
         use ::std::convert::TryFrom as _;
-        $crate::internal_new!($struct, try_from $($args),*)
+        $crate::__internal_new!($struct, try_from $($args),*)
     }};
     ($struct:tt$(<$($gen:tt),*>)?: $constructor:tt($($args:tt),*)) => {
         ::paste::paste! {
-            $crate::internal_new!($struct$(<$($gen),*>)?, [<try_from_ $constructor>] $($args),*)
+            $crate::__internal_new!($struct$(<$($gen),*>)?, [<try_from_ $constructor>] $($args),*)
         }
     }
 }
