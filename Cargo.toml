@@ -7,7 +7,6 @@ name = "new"
 version.workspace = true
 
 [dependencies]
-paste = "1.0"
 
 [workspace.lints.rust]
 elided_lifetimes_in_paths = "warn"
