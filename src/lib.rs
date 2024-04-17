@@ -47,10 +47,10 @@ macro_rules! with {
 /// [`from`]: std::convert::From::from
 #[macro_export]
 macro_rules! from {
-	($struct:tt($($args:tt),*)) => {
+	($struct:tt($($args:tt),*)) => {{
 		use ::std::convert::From as _;
         $crate::__internal_new!($struct, from $($args),*)
-	};
+	}};
     ($struct:tt$(<$($gen:tt),*>)?: $constructor:tt($($args:tt),*)) => {
         ::paste::paste! {
             $crate::__internal_new!($struct$(<$($gen),*>)?, [<from_ $constructor>] $($args),*)
